@@ -1,61 +1,65 @@
+var crew = new Array();
 $(document).ready(function(){
-    $('#wr-block2').hide();
-    getMenuElements();
+  crew = createCrew(50);
 
+  listCrew();
+
+  $('#order-by-area').on('click', function (e){
+    e.preventDefault();
+
+    // sortCrewByMultiplier();
+    sortCrewByArea();
+    $('.members-list').empty();
+    listCrew();
+  });
 
 });
 
-function sendAjax (url, headers, data, fCallback){
-    $.ajax({
-        url: url,
-        contentType: 'application/json; charset=utf-8',
-        type: 'POST',
-        dataType: 'json',
-        headers: headers,
-        data: JSON.stringify(data)
-    }).done(function (response) {
-        if (response){
-            fCallback(response);
-        }
-        /*        else{
-         showError ('Se producido un error en la conexión con el servidor, inténtelo de nuevo más tarde.');
-         }*/
-    })
+function createCrew (numberOfMebers){
+  var race = ['human', 'vulcan', 'betazoid'];
+  var color = ['blue', 'red', 'yellow'];
+  var area = ['science', 'engineering', 'command']
+
+  for (i=0; i<numberOfMebers; i++){
+    var raceIndex = 0 + Math.floor(Math.random() * 3);
+    var areaIndex = 0 + Math.floor(Math.random() * 3);
+    var multiplier = 1 + Math.floor(Math.random() * 3);
+
+    var member = {
+      'id': i,
+      'race' : race[raceIndex],
+      'area' : area[areaIndex],
+      'color' : color[areaIndex],
+      'multiplier' : multiplier
+    }
+    crew.push (member);
+  }
+  return crew;
 }
 
-function getMenuElements() {
-    var url = './data/menu.json';
-    var headers = '';
-    var data = '';
-    sendAjax(url,headers,data,setMenuElements);
+function listCrew (){
+  var template = "";
+  console.log (crew.length);
+  for(i=0; i<crew.length; i++){
+    template += '<li><div class="col-xs-2"><span class="position-color ' + crew[i].color + '"></span></div><div class="col-xs-8"><div class="member-id">' + crew[i].id + '</div><div class="race">' + crew[i].race + '</div></div><div class="col-xs-2"><div class="multiplier">' + crew[i].multiplier + '</div></div></li>'
+  }
+
+  $('.members-list').append(template);
 }
 
-function setMenuElements(obj) {
-    console.log (obj);
-    if(obj.data != null){
-        var data = obj.data;
-        var str ="";
-        if (obj.data != null)
-            for (var i = 0; i < data.length; i++) {
-                str += "<li data-target='wr-block" + (i+1) + "'><a href='#'>" + data[i].title +"</a></li>";
-                console.log(str);
-            }
-        $("#main-menu").append(str);
-    }
-    else{
 
-    }
+function sortCrewByMultiplier (){
+  crew.sort(function(a, b) {
+    var memberA = a.multiplier;
+    var memberB = b.multiplier;
+    return (memberA < memberB) ? -1 : (memberA > memberB) ? 1 : 0;
+  });
+}
 
-    $('#main-menu li').on('click', function(){
-        var target = $(this).attr('data-target')
-        console.log('li data-target: ' + target);
-
-        $('[id^="wr-block"]').each(function (i, el){
-            if($(el).attr('id') == target){
-                console.log ('match!');
-                $('[id^="wr-block"]').slideUp();
-                $(this).slideDown();
-            }
-        })
-    })
+function sortCrewByArea (){
+  crew.sort(function(a, b) {
+    var memberA = a.area.toLowerCase();
+    var memberB = b.area.toLowerCase();
+    return (memberA < memberB) ? -1 : (memberA > memberB) ? 1 : 0;
+  });
 }
