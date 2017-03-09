@@ -1,12 +1,10 @@
 {
   "data": [
     {
-      "title" : "MyApp",
-      "url" : "index.html"
+      "title" : "MyApp"
     },
     {
-      "title" : "Page2",
-      "url" : "page2.html"
+      "title" : "Page2"
     }
   ]
 }
