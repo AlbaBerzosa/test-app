@@ -1,5 +1,8 @@
 $(document).ready(function(){
+    $('#wr-block2').hide();
     getMenuElements();
+
+
 });
 
 function sendAjax (url, headers, data, fCallback){
@@ -29,14 +32,12 @@ function getMenuElements() {
 
 function setMenuElements(obj) {
     console.log (obj);
-
     if(obj.data != null){
         var data = obj.data;
         var str ="";
-        console.log("aquí");
         if (obj.data != null)
             for (var i = 0; i < data.length; i++) {
-                str += "<li><a href='" + data[i].url + "'>" + data[i].title +"</a></li>";
+                str += "<li data-target='wr-block" + (i+1) + "'><a href='#'>" + data[i].title +"</a></li>";
                 console.log(str);
             }
         $("#main-menu").append(str);
@@ -45,4 +46,16 @@ function setMenuElements(obj) {
 
     }
 
+    $('#main-menu li').on('click', function(){
+        var target = $(this).attr('data-target')
+        console.log('li data-target: ' + target);
+
+        $('[id^="wr-block"]').each(function (i, el){
+            if($(el).attr('id') == target){
+                console.log ('match!');
+                $('[id^="wr-block"]').slideUp();
+                $(this).slideDown();
+            }
+        })
+    })
 }
